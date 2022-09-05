@@ -9,22 +9,13 @@ contract MockDelegatableCore is DelegatableCore {
     bytes32 public immutable domainHash;
 
     constructor(string memory contractName) {
-        domainHash = getEIP712DomainHash(
-            contractName,
-            "1",
-            block.chainid,
-            address(this)
-        );
+        domainHash = getEIP712DomainHash(contractName, "1", block.chainid, address(this));
     }
 
     /* ===================================================================================== */
     /* Helper Functions                                                                    */
     /* ===================================================================================== */
-    function updateNonce(
-        address intendedSender,
-        uint256 queue,
-        uint256 nonce
-    ) internal {
+    function updateNonce(address intendedSender, uint256 queue, uint256 nonce) internal {
         multiNonce[intendedSender][queue] = nonce;
     }
 
@@ -53,13 +44,13 @@ contract MockDelegatableCore is DelegatableCore {
         string memory version,
         uint256 chainId,
         address verifyingContract
-    ) public pure returns (bytes32) {
+    )
+        public
+        pure
+        returns (bytes32)
+    {
         bytes memory encoded = abi.encode(
-            EIP712DOMAIN_TYPEHASH,
-            keccak256(bytes(contractName)),
-            keccak256(bytes(version)),
-            chainId,
-            verifyingContract
+            EIP712DOMAIN_TYPEHASH, keccak256(bytes(contractName)), keccak256(bytes(version)), chainId, verifyingContract
         );
         return keccak256(encoded);
     }
@@ -68,53 +59,29 @@ contract MockDelegatableCore is DelegatableCore {
         public
         view
         virtual
-        override(DelegatableCore)
+        override (DelegatableCore)
         returns (address)
     {
         Delegation memory delegation = signedDelegation.delegation;
         bytes32 sigHash = getDelegationTypedDataHash(delegation);
-        address recoveredSignatureSigner = recover(
-            sigHash,
-            signedDelegation.signature
-        );
+        address recoveredSignatureSigner = recover(sigHash, signedDelegation.signature);
         return recoveredSignatureSigner;
     }
 
-    function getDelegationTypedDataHash(Delegation memory delegation)
-        public
-        view
-        returns (bytes32)
-    {
-        bytes32 digest = keccak256(
-            abi.encodePacked(
-                "\x19\x01",
-                domainHash,
-                GET_DELEGATION_PACKETHASH(delegation)
-            )
-        );
+    function getDelegationTypedDataHash(Delegation memory delegation) public view returns (bytes32) {
+        bytes32 digest = keccak256(abi.encodePacked("\x19\x01", domainHash, GET_DELEGATION_PACKETHASH(delegation)));
         return digest;
     }
 
-    function invoke(Invocation[] calldata batch, address sender)
-        external
-        returns (bool success)
-    {
+    function invoke(Invocation[] calldata batch, address sender) external returns (bool success) {
         _invoke(batch, sender);
     }
 
-    function enforceReplayProtection(
-        address intendedSender,
-        ReplayProtection memory protection
-    ) external {
+    function enforceReplayProtection(address intendedSender, ReplayProtection memory protection) external {
         _enforceReplayProtection(intendedSender, protection);
     }
 
-    function execute(
-        address to,
-        bytes memory data,
-        uint256 gasLimit,
-        address sender
-    ) internal returns (bool success) {
+    function execute(address to, bytes memory data, uint256 gasLimit, address sender) internal returns (bool success) {
         return _execute(to, data, gasLimit, sender);
     }
 }

@@ -14,17 +14,14 @@ contract ERC20AllowanceEnforcer is CaveatEnforcer {
      * @param transaction - The transaction the delegate might try to perform.
      * @param delegationHash - The hash of the delegation being operated on.
      */
-    function enforceCaveat(
-        bytes calldata terms,
-        Transaction calldata transaction,
-        bytes32 delegationHash
-    ) public override returns (bool) {
+    function enforceCaveat(bytes calldata terms, Transaction calldata transaction, bytes32 delegationHash)
+        public
+        override
+        returns (bool)
+    {
         bytes4 targetSig = bytes4(transaction.data[0:4]);
         bytes4 allowedSig = bytes4(0xa9059cbb);
-        require(
-            targetSig == allowedSig,
-            "ERC20AllowanceEnforcer:invalid-method"
-        );
+        require(targetSig == allowedSig, "ERC20AllowanceEnforcer:invalid-method");
         uint256 limit = BytesLib.toUint256(terms, 0);
         uint256 sending = BytesLib.toUint256(transaction.data, 36);
         spentMap[msg.sender][delegationHash] += sending;

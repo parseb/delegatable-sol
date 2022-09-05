@@ -12,11 +12,7 @@ contract EIP1271 {
     /**
      * @notice Verifies that the signer is the owner of the signing contract.
      */
-    function isValidSignature(bytes32 _hash, bytes calldata _signature)
-        external
-        view
-        returns (bytes4)
-    {
+    function isValidSignature(bytes32 _hash, bytes calldata _signature) external view returns (bytes4) {
         if (isOwner[recoverSigner(_hash, _signature)]) {
             return 0x1626ba7e;
         } else {
@@ -30,11 +26,7 @@ contract EIP1271 {
      * @param _hash       Hash of message that was signed
      * @param _signature  Signature encoded as (bytes32 r, bytes32 s, uint8 v)
      */
-    function recoverSigner(bytes32 _hash, bytes memory _signature)
-        internal
-        pure
-        returns (address signer)
-    {
+    function recoverSigner(bytes32 _hash, bytes memory _signature) internal pure returns (address signer) {
         (uint8 v, bytes32 r, bytes32 s) = _splitSignature(_signature);
         // EIP-2 still allows signature malleability for ecrecover(). Remove this possibility and make the signature
         // unique. Appendix F in the Ethereum Yellow paper (https://ethereum.github.io/yellowpaper/paper.pdf), defines
@@ -49,49 +41,24 @@ contract EIP1271 {
         // Source OpenZeppelin
         // https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/cryptography/ECDSA.sol
 
-        if (
-            uint256(s) >
-            0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5D576E7357A4501DDFE92F46681B20A0
-        ) {
-            revert(
-                "SignatureValidator#recoverSigner: invalid signature 's' value"
-            );
+        if (uint256(s) > 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5D576E7357A4501DDFE92F46681B20A0) {
+            revert("SignatureValidator#recoverSigner: invalid signature 's' value");
         }
 
         if (v != 27 && v != 28) {
-            revert(
-                "SignatureValidator#recoverSigner: invalid signature 'v' value"
-            );
+            revert("SignatureValidator#recoverSigner: invalid signature 'v' value");
         }
 
         // Recover ECDSA signer
-        signer = ecrecover(
-            keccak256(
-                abi.encodePacked("\x19Ethereum Signed Message:\n32", _hash)
-            ),
-            v,
-            r,
-            s
-        );
+        signer = ecrecover(keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n32", _hash)), v, r, s);
 
         // Prevent signer from being 0x0
-        require(
-            signer != address(0x0),
-            "SignatureValidator#recoverSigner: INVALID_SIGNER"
-        );
+        require(signer != address(0x0), "SignatureValidator#recoverSigner: INVALID_SIGNER");
 
         return signer;
     }
 
-    function _splitSignature(bytes memory sig)
-        internal
-        pure
-        returns (
-            uint8 v,
-            bytes32 r,
-            bytes32 s
-        )
-    {
+    function _splitSignature(bytes memory sig) internal pure returns (uint8 v, bytes32 r, bytes32 s) {
         require(sig.length == 65);
 
         assembly {

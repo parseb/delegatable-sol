@@ -11,11 +11,11 @@ contract BlockNumberEnforcer is CaveatEnforcer {
      * @param transaction - The transaction the delegate might try to perform.
      * @param delegationHash - The hash of the delegation being operated on.
      */
-    function enforceCaveat(
-        bytes calldata terms,
-        Transaction calldata transaction,
-        bytes32 delegationHash
-    ) public override returns (bool) {
+    function enforceCaveat(bytes calldata terms, Transaction calldata transaction, bytes32 delegationHash)
+        public
+        override
+        returns (bool)
+    {
         uint128 logicOperator = BytesLib.toUint128(terms, 0);
         uint128 blockExpiration = BytesLib.toUint128(terms, 16);
         if (logicOperator == 0) {

@@ -10,11 +10,12 @@ contract AllowedMethodsEnforcer is CaveatEnforcer {
      * @param transaction - The transaction the delegate might try to perform.
      * @param delegationHash - The hash of the delegation being operated on.
      */
-    function enforceCaveat(
-        bytes calldata terms,
-        Transaction calldata transaction,
-        bytes32 delegationHash
-    ) public pure override returns (bool) {
+    function enforceCaveat(bytes calldata terms, Transaction calldata transaction, bytes32 delegationHash)
+        public
+        pure
+        override
+        returns (bool)
+    {
         bytes4 targetSig = bytes4(transaction.data[0:4]);
         for (uint256 i = 0; i < terms.length; i += 4) {
             bytes4 allowedSig = bytes4(terms[i:i + 4]);

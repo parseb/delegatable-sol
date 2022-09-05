@@ -13,20 +13,12 @@ contract DelegatableOwnable is Delegatable, Ownable {
         purpose = newPurpose;
     }
 
-    function _msgSender()
-        internal
-        view
-        override(DelegatableCore, Context)
-        returns (address sender)
-    {
+    function _msgSender() internal view override (DelegatableCore, Context) returns (address sender) {
         if (msg.sender == address(this)) {
             bytes memory array = msg.data;
             uint256 index = msg.data.length;
             assembly {
-                sender := and(
-                    mload(add(array, index)),
-                    0xffffffffffffffffffffffffffffffffffffffff
-                )
+                sender := and(mload(add(array, index)), 0xffffffffffffffffffffffffffffffffffffffff)
             }
         } else {
             sender = msg.sender;
