@@ -1,6 +1,8 @@
 ![banner](https://cloudflare-ipfs.com/ipfs/QmSWGEWUCThfBW127zPeF7oqwLwzVndB5mWDbgKCPnwCvE)
 
-# Delegatable
+
+# Delegateable - solidity only rules apply
+
 
 ![Test](https://github.com/kamescg/delegatable-sol/actions/workflows/test.yml/badge.svg)
 ![Coverage](https://github.com/kamescg/delegatable-sol/actions/workflows/coverage.yml/badge.svg)
