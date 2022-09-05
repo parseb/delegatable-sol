@@ -1,7 +1,6 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.15;
 
-import "hardhat/console.sol";
 import "../DelegatableCore.sol";
 import {ReplayProtection} from "../TypesAndDecoders.sol";
 
